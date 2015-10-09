@@ -69,7 +69,7 @@ set :ssh_options, {
 forward_agent: true
 }
 
-set :branch, 'develop'
+set :branch, 'master'
 set :deploy_to, '/home/kickmarketeu'
 set :stage, :production
 set :rails_env, :production
