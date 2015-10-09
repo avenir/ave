@@ -2,8 +2,7 @@
 lock '3.4.0'
 
 set :application, 'kickmarket'
-set :repository, "." 
-set :deploy_via, :copy
+set :repo_url, "git@github.com:avenir/ave.git"
 # set :repo_url, 'github.com/avenir/ave.git'
 
 # Default branch is :master
