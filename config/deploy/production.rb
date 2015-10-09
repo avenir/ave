@@ -66,8 +66,7 @@ role :db,  %w{deploy@46.4.213.86}
 set :password, ask('Server password:', nil)
 server '46.4.213.86', user: 'root', password: fetch(:password), roles: %w{web app db}, primary: :true
 set :ssh_options, {
-forward_agent: true,
-port: 2014
+forward_agent: true
 }
 
 set :branch, 'develop'
