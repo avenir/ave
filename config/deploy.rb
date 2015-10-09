@@ -24,7 +24,7 @@ set :repo_url, "git@github.com:avenir/ave.git"
  # set :pty, true
 
 # Default value for :linked_files is []
-# set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/database.yml}
 # set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
 
 # Default value for linked_dirs is []
