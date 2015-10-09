@@ -17,7 +17,7 @@ end
 
 gem 'sass-rails'
 gem 'compass-rails'
-
+gem 'capistrano', '~> 3.4.0'
 gem 'jquery-rails', '2.1.4'
 
 # Bundle the extra gems:
@@ -26,7 +26,7 @@ gem 'jquery-rails', '2.1.4'
 gem "passenger", "~> 5.0.18"
 gem "rack-timeout"
 
-gem "mysql2"
+gem "mysql2", "~> 0.3.10"
 gem 'haml'
 gem 'sass', "  ~> 3.2.9"
 gem 'rest-client', '>= 1.6.0'
