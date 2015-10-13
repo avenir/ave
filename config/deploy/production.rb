@@ -26,7 +26,6 @@ role :db,  %w{deploy@46.4.213.86}
 # role :db,  %w{deploy@example.com}
 
 
-
 # Configuration
 # =============
 # You can set any configuration variable like in config/deploy.rb
@@ -68,7 +67,6 @@ server '46.4.213.86', user: 'root', password: fetch(:password), roles: %w{web ap
 set :ssh_options, {
 forward_agent: true
 }
-
 set :branch, 'master'
 set :deploy_to, '/home/kickmarketeu'
 set :stage, :production

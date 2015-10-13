@@ -84,7 +84,7 @@ GEM
       rack (>= 0.9.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    braintree (2.49.0)
+    braintree (2.50.0)
       builder (>= 2.0.0)
     builder (3.0.4)
     cache_digests (0.3.1)
@@ -330,7 +330,7 @@ GEM
     haml (4.0.7)
       tilt
     hashie (3.4.2)
-    highline (1.7.7)
+    highline (1.7.8)
     hike (1.2.3)
     htmlentities (4.3.4)
     http-cookie (1.0.2)
@@ -742,3 +742,6 @@ DEPENDENCIES
   will_paginate
   xpath
   zeus (= 0.15.1)
+
+BUNDLED WITH
+   1.10.6
