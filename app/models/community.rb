@@ -255,6 +255,11 @@ class Community < ActiveRecord::Base
                                                       "image/x-icon",
                                                       "image/vnd.microsoft.icon"]
    # process_in_background :favicon
+  process_in_background :logo
+  process_in_background :wide_logo
+  process_in_background :cover_photo
+  process_in_background :small_cover_photo
+  process_in_background :favicon
 
   validates_format_of :twitter_handle, with: /\A[A-Za-z0-9_]{1,15}\z/, allow_nil: true
 

@@ -18,6 +18,28 @@ class TransactionsController < ApplicationController
     [:end_on, transform_with: ->(v) { Maybe(v).map { |d| TransactionViewUtils.parse_booking_date(d) }.or_else(nil) } ]
   )
 
+  
+# chained paypal payment 
+#   def checkout
+#   recipients = [{:email => 'receiver_email',
+#                  :amount => some_amount,
+#                  :primary => false},
+#                 {:email => 'receiver_email',
+#                  :amount => recipient_amount,
+#                  :primary => false}
+#                  ]
+#   response = gateway.setup_purchase(
+#     :return_url => url_for(:action => 'action', :only_path => false),
+#     :cancel_url => url_for(:action => 'action', :only_path => false),
+#     :ipn_notification_url => url_for(:action => 'notify_action', :only_path => false),
+#     :receiver_list => recipients
+#   )
+#   # For redirecting the customer to the actual paypal site to finish the payment.
+#   redirect_to (gateway.redirect_url_for(response["payKey"]))
+# end
+
+
+
   def new
     Result.all(
       ->() {
