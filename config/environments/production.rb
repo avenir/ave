@@ -97,7 +97,18 @@ Kassi::Application.configure do
   config.action_mailer.raise_delivery_errors = true
 
   mail_delivery_method = (APP_CONFIG.mail_delivery_method.present? ? APP_CONFIG.mail_delivery_method.to_sym : :sendmail)
+ config.after_initialize do
+    ActiveMerchant::Billing::Base.mode = :test
+    paypal_options = {
+        login: "vikas-facilitator_api1.esignature.com.np",
+        password: "1395372424",
+        signature: "An5ns1Kso7MWUdW4ErQKJJJ4qi4-AeUWvcYwAah4uQWmMBoHdxQ52OhD",
+        appid: "APP-80W284485P519543T"
+    }
+    ::ADAPTIVE_GATEWAY = ActiveMerchant::Billing::PaypalAdaptivePayment.new(paypal_options)
 
+
+  end
   config.action_mailer.delivery_method = mail_delivery_method
   if mail_delivery_method == :postmark
     config.action_mailer.postmark_settings = { :api_key => APP_CONFIG.postmark_api_key }
