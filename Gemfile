@@ -3,7 +3,8 @@ source 'http://rubygems.org'
 ruby '2.1.2'
 
 gem 'rails', '3.2.21'
-# gem "active_paypal_adaptive_payment"
+gem 'activemerchant'
+gem "active_paypal_adaptive_payment"
 # To use debugger
 #gem 'ruby-debug'
 
