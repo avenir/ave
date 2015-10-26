@@ -175,9 +175,9 @@ class Person < ActiveRecord::Base
                       :thumb => "48x48#",
                       :original => "600x800>"},
                     :default_url => ActionController::Base.helpers.asset_path("/assets/profile_image/:style/missing.png", :digest => true)
-  process_in_background :image
+  # process_in_background :image
 
-  #validates_attachment_presence :image
+  # validates_attachment_presence :image
   validates_attachment_size :image, :less_than => 9.megabytes
   validates_attachment_content_type :image,
                                     :content_type => ["image/jpeg", "image/png", "image/gif",

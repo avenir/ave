@@ -197,6 +197,7 @@ class Admin::CommunitiesController < ApplicationController
     ]
     permitted_params << :custom_head_script
     params.require(:community).permit(*permitted_params)
+  
     update(@current_community,
            params[:community].merge(stylesheet_needs_recompile: regenerate_css?(params, @current_community)),
            edit_look_and_feel_admin_community_path(@current_community),
@@ -295,6 +296,7 @@ class Admin::CommunitiesController < ApplicationController
   end
 
   def update(model, params, path, action, &block)
+   
     if model.update_attributes(params)
       flash[:notice] = t("layouts.notifications.community_updated")
       yield if block_given? #on success, call optional block

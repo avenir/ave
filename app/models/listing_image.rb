@@ -34,7 +34,7 @@ class ListingImage < ActiveRecord::Base
         :original => "#{APP_CONFIG.original_image_width}x#{APP_CONFIG.original_image_height}>",
         :big => Proc.new { |instance| instance.crop_big },
         :email => "150x100#"}
-
+  
   before_save :set_dimensions!
 
   #process_in_background :image, :processing_image_url => "/assets/listing_image/processing.png", :priority => 1
