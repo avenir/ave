@@ -2145,6 +2145,7 @@ figure.fluidratio {
     @include media(tablet) {
       @include fluid-ratio(em(1920) em($cover-photo-height), em(300) em($cover-photo-height));
     }
+  }
   figure.marketplace-cover1 {
     height: em($cover-photo-mobile-height);
     @include media(tablet) {
@@ -2158,6 +2159,7 @@ figure.fluidratio {
     @include media(tablet) {
       @include fluid-ratio(em(1920) em($small-cover-photo-height), em(300) em($small-cover-photo-height));
     }
+  }
   figure.marketplace-cover-small1 {
     height: em($small-cover-photo-mobile-height);
     @include media(tablet) {
@@ -2388,3 +2390,4 @@ figure.fluidratio {
     }
   }
 }
+
