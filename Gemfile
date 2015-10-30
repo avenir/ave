@@ -5,6 +5,9 @@ ruby '2.1.2'
 gem 'rails', '3.2.21'
 gem 'activemerchant'
 gem "active_paypal_adaptive_payment"
+gem 'resque'
+gem 'daemons'
+
 # To use debugger
 #gem 'ruby-debug'
 

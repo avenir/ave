@@ -209,6 +209,27 @@ $elementSpacing: lines(0.5);
   display: inline-block;
 }
 
+// Css for logo
+.header-wide-logo1.visible-tablet1 {
+  width: em(168);
+  height: em(40);
+
+  // Highres image
+  background-repeat: no-repeat;
+  @include background-size(em(168) auto);
+  display: inline-block;
+}
+
+.header-wide-logo1.visible-tablet1 {
+  width: em(168);
+  height: em(40);
+
+  // Highres image
+  background-repeat: no-repeat;
+  @include background-size(em(168) auto);
+  display: inline-block;
+}
+
 .header-square-logo {
   background-image: url(image-path($square-logo-lowres-url));
 

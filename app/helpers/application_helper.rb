@@ -870,6 +870,43 @@ module ApplicationHelper
     block.call if show_big_cover_photo?
   end
 
+ #Display cover photo from admin design
+  def cover_photo_file_name_display
+    photo=Community.first.cover_photo_file_name
+       if photo.present?
+        "/system/cover_photos/1/original/"+photo
+      else
+        photo= "/assets/cover_photos/header/default.jpg"
+      end
+  end
+  
+  def small_cover_photo_file_name_display
+    small_photo=Community.first.small_cover_photo_file_name
+       if small_photo.present?
+        "/system/small_cover_photos/1/original/"+small_photo
+      else
+        small_photo= "/assets/cover_photos/header/default.jpg"
+      end
+  end
+
+  def logo_Display
+    logo=Community.first.wide_logo_file_name
+    if logo.present?
+     "/system/wide_logos/1/original/"+logo
+     else
+     logo="/assets/logos/full/default.png"
+    end 
+  end
+
+  def logo_display_mobile
+    logo_mobile=Community.first.logo_file_name
+    if logo_mobile.present?
+     "/system/logos/1/original/"+logo_mobile
+     else
+     logo_mobile="/assets/logos/full/default.png"
+    end 
+  end
+
   # Render block only if small cover photo should be shown
   def with_small_cover_photo(&block)
     block.call unless show_big_cover_photo?

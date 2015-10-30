@@ -15,14 +15,16 @@
     %section.marketplace-lander
       - with_big_cover_photo do
         .coverimage
-          %figure.marketplace-cover.fluidratio
+          %figure.marketplace-cover1.fluidratio
+          = image_tag(cover_photo_file_name_display) 
         .wrapper
           .lander-content-container
             .lander-content.marketplace-lander-content
               = yield :title_header
       - with_small_cover_photo do
         .coverimage
-          %figure.marketplace-cover-small.fluidratio
+          %figure.marketplace-cover-small1.fluidratio.fluidratio1
+            = image_tag(small_cover_photo_file_name_display)
           .coverimage-fade{:class => yield(:coverfade_class)}
             %figure.marketplace-cover-small-fade.fluidratio
         .title-container

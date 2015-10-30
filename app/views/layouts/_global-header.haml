@@ -48,7 +48,10 @@
       keep the logo here after buttons
     .header-left.header-logo-container
       = link_to @homepage_path, :class => "header-logo", :id => "header-logo" do
-        %i.header-wide-logo.visible-tablet
+        %i.header-wide-logo1.visible-tablet1
+          = image_tag(logo_Display) 
           -# Logo is here, it's a CSS background
         %i.header-square-logo.hidden-tablet
+          = image_tag(logo_display_mobile)
           -# Logo is here, it's a CSS background
+           
