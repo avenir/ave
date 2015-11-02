@@ -906,6 +906,15 @@ module ApplicationHelper
      logo_mobile="/assets/logos/full/default.png"
     end 
   end
+  
+  # Favicon display
+  # def favicon_link_tag(source=favicon_file_name, options={})
+  #    tag('link',{
+  #     :rel =>  'shortcut icon',
+  #     :type => 'image/png',
+  #     :href => path_to_image(source)
+  #     }.merge!(options.symbolize_keys))
+  # end
 
   # Render block only if small cover photo should be shown
   def with_small_cover_photo(&block)
