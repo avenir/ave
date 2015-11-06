@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151008130725) do
+ActiveRecord::Schema.define(:version => 20151102103332) do
 
   create_table "auth_tokens", :force => true do |t|
     t.string   "token"
@@ -901,6 +901,16 @@ ActiveRecord::Schema.define(:version => 20151008130725) do
     t.datetime "updated_at",                     :null => false
     t.string   "country_code",      :limit => 8
   end
+
+  create_table "shippings", :force => true do |t|
+    t.integer  "listing_id"
+    t.string   "country"
+    t.float    "shipping_rate"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "shippings", ["listing_id"], :name => "index_shippings_on_listing_id"
 
   create_table "testimonials", :force => true do |t|
     t.float    "grade"

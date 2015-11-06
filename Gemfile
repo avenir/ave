@@ -55,7 +55,7 @@ gem 'recaptcha'
 gem 'delayed_job', "~>3.0.5"
 gem 'delayed_job_active_record'
 gem 'json', "~>1.8.0"
-gem 'multi_json', "~>1.7.3" # 1.8.0 caused "invalid byte sequence in UTF-8" at heroku
+gem 'multi_json', "~>1.8" # 1.8.0 caused "invalid byte sequence in UTF-8" at heroku
 gem 'web_translate_it'
 gem 'postmark-rails' # could be removed as not currently used
 gem 'rails-i18n'
@@ -103,7 +103,7 @@ group :development, :staging do
 end
 
 group :development do
-  gem 'guard-livereload', require: false
+ 
   gem 'rack-livereload'
   gem 'rb-fsevent',       require: false
   gem 'guard-rspec',      require: false
@@ -112,6 +112,15 @@ group :development do
   gem 'i18n-tasks', '~> 0.6.2'
   gem 'quiet_assets'
   gem 'better_errors'
+ 
+end
+
+group :development do
+  gem 'guard-livereload', '~> 2.4', require: false
+end
+
+group :development do
+  gem 'guard'
 end
 
 group :test do

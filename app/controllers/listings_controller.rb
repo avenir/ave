@@ -196,7 +196,8 @@ class ListingsController < ApplicationController
     return redirect_to action: :new unless request.xhr?
 
     @listing = Listing.new
-
+    @shipping = @listing.shippings.build
+   
     if (@current_user.location != nil)
       temp = @current_user.location
       temp.location_type = "origin_loc"
@@ -219,6 +220,7 @@ class ListingsController < ApplicationController
   end
 
   def create
+   
     params[:listing].delete("origin_loc_attributes") if params[:listing][:origin_loc_attributes][:address].blank?
 
     shape = get_shape(Maybe(params)[:listing][:listing_shape_id].to_i.or_else(nil))
@@ -235,20 +237,20 @@ class ListingsController < ApplicationController
 
     listing_params = normalize_price_params(listing_params)
     m_unit = select_unit(listing_unit, shape)
-
+    
     listing_params = create_listing_params(listing_params).merge(
         community_id: @current_community.id,
         listing_shape_id: shape[:id],
         transaction_process_id: shape[:transaction_process_id],
         shape_name_tr_key: shape[:name_tr_key],
-        action_button_tr_key: shape[:action_button_tr_key],
+        action_button_tr_key: shape[:action_button_tr_key]
     ).merge(unit_to_listing_opts(m_unit)).except(:unit)
 
     @listing = Listing.new(listing_params)
-
+    
     ActiveRecord::Base.transaction do
       @listing.author = @current_user
-
+      
       if @listing.save
         upsert_field_values!(@listing, params[:custom_fields])
 
@@ -286,6 +288,10 @@ class ListingsController < ApplicationController
         redirect_to new_listing_path and return
       end
     end
+  end
+
+  def filter_params
+    params.require(:listing).permit(:name, :title, :price, :currency,  :shipping_price, :shipping_price_additional, :description, :origin, :category_id, :listing_shape_id, :listing_images, shipping_attributes: [:country, :shipping_price])
   end
 
   def edit

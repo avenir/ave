@@ -69,7 +69,7 @@ class Listing < ActiveRecord::Base
   belongs_to :author, :class_name => "Person", :foreign_key => "author_id"
 
   has_many :listing_images, :dependent => :destroy
-
+  has_many :shippings
   has_many :conversations
   has_many :comments, :dependent => :destroy
   has_many :custom_field_values, :dependent => :destroy
@@ -80,7 +80,7 @@ class Listing < ActiveRecord::Base
   has_one :origin_loc, :class_name => "Location", :conditions => ['location_type = ?', 'origin_loc'], :dependent => :destroy
   has_one :destination_loc, :class_name => "Location", :conditions => ['location_type = ?', 'destination_loc'], :dependent => :destroy
   accepts_nested_attributes_for :origin_loc, :destination_loc
-
+  accepts_nested_attributes_for :shippings
   has_and_belongs_to_many :followers, :class_name => "Person", :join_table => "listing_followers"
 
   belongs_to :category

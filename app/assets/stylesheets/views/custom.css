@@ -1,0 +1,38 @@
+.delivery-col{
+  -webkit-border-radius: 0.3125em;
+    -moz-border-radius: 0.3125em;
+    -ms-border-radius: 0.3125em;
+    -o-border-radius: 0.3125em;
+    border-radius: 0.3125em;
+    background: #a64c5d;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    margin: 0.75em 0;
+    padding: 0 1.5em;
+    padding-bottom: 4px;
+    height: 1.625em;
+    border: 0;
+    display: table;
+    line-height: 1.5em;
+}
+.coverimage > img
+ {
+        height: 453px;
+ }
+.visible-tablet1 img {
+        width: 168px;
+        height: 40px;
+    }
+.figure.fluidratio {
+        height: auto !important;
+    }
+@media only screen and (max-width: 560px) {
+        .visible-tablet1 img {
+            display: none;
+        }
+    }
+.fluidratio1 img {
+        height: 96px;
+        width: 1920px;
+    }
