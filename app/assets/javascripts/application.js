@@ -21,6 +21,7 @@
 //= require jquery.fileupload-process
 //= require jquery.fileupload-validate
 //= require jquery.fileupload-image
+//= require waitMe.min.js
 
 //= require selectize-standalone.js
 //= require datepicker/bootstrap-datepicker.js
@@ -71,4 +72,5 @@
 //= require paypal_account_settings
 //= require transaction
 //= require listing_form
+//= require custom
 //= require_self

@@ -120,4 +120,18 @@ Kassi::Application.configure do
   }
 
   ActionMailer::Base.perform_deliveries = true # the "deliver_*" methods are available
+
+
+  config.after_initialize do
+    ActiveMerchant::Billing::Base.mode = :test
+    paypal_options = {
+        login: APP_CONFIG.paypal_username,
+        password: APP_CONFIG.paypal_password,
+        signature: APP_CONFIG.paypal_signature,
+        appid: APP_CONFIG.paypal_app_id
+    }
+    ::ADAPTIVE_GATEWAY = ActiveMerchant::Billing::PaypalAdaptivePayment.new(paypal_options)
+
+
+  end
 end

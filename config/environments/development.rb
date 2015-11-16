@@ -89,4 +89,17 @@ Kassi::Application.configure do
 
   # Automatically inject JavaScript needed for LiveReload
   config.middleware.insert_after(ActionDispatch::Static, Rack::LiveReload)
+
+  config.after_initialize do
+    ActiveMerchant::Billing::Base.mode = :test
+    paypal_options = {
+        login: "vikas-facilitator_api1.esignature.com.np",
+        password: "1395372424",
+        signature: "An5ns1Kso7MWUdW4ErQKJJJ4qi4-AeUWvcYwAah4uQWmMBoHdxQ52OhD",
+        appid: "APP-80W284485P519543T"
+    }
+    ::ADAPTIVE_GATEWAY = ActiveMerchant::Billing::PaypalAdaptivePayment.new(paypal_options)
+
+
+  end
 end

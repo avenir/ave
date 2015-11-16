@@ -26,7 +26,7 @@ gem 'jquery-rails', '2.1.4'
 gem "passenger", "~> 5.0.18"
 gem "rack-timeout"
 
-gem "mysql2"
+gem "mysql2", "~> 0.3.10"
 gem 'haml'
 gem 'sass', "  ~> 3.2.9"
 gem 'rest-client', '>= 1.6.0'
@@ -87,6 +87,9 @@ gem 'jwt', '~> 1.5.1'
 gem 'lograge'
 gem 'public_suffix' # Needed currently to set GA hostname right, probably not
                     # needed anymore when GA script updated.
+group :development do
+  gem 'capistrano-rails', '~> 1.1.2'
+end
 
 group :staging, :production do
   gem 'newrelic_rpm', '~> 3.9.1.236'
@@ -118,7 +121,6 @@ group :test do
   gem 'capybara'
   gem 'cucumber-rails', :require => false
   gem 'cucumber'
-  gem 'selenium-webdriver'
   gem 'launchy'
   gem 'ruby-prof'
   gem "pickle"
@@ -140,3 +142,7 @@ group :development, :test do
 end
 
 gem 'strong_parameters'
+
+
+gem 'activemerchant'
+gem "active_paypal_adaptive_payment"

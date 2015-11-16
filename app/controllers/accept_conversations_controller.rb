@@ -4,6 +4,7 @@ class AcceptConversationsController < ApplicationController
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_accept_or_reject")
   end
 
+
   before_filter :fetch_conversation
   before_filter :fetch_listing
 

@@ -20,36 +20,134 @@ class TransactionsController < ApplicationController
 
   def new
     Result.all(
-      ->() {
-        fetch_data(params[:listing_id])
-      },
-      ->((listing_id, listing_model)) {
-        ensure_can_start_transactions(listing_model: listing_model, current_user: @current_user, current_community: @current_community)
-      }
+    ->() {
+      fetch_data(params[:listing_id])
+    },
+    ->((listing_id, listing_model)) {
+      ensure_can_start_transactions(listing_model: listing_model, current_user: @current_user, current_community: @current_community)
+    }
     ).on_success { |((listing_id, listing_model, author_model, process, gateway))|
       booking = listing_model.unit_type == :day
 
       transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
 
+
+      if params[:listing_id].present?
+        session[:listing_id] = params[:listing_id]
+      end
+
       case [process[:process], gateway, booking]
-      when matches([:none])
-        render_free(listing_model: listing_model, author_model: author_model, community: @current_community, params: transaction_params)
-      when matches([:preauthorize, __, true])
-        redirect_to book_path(transaction_params)
-      when matches([:preauthorize, :paypal])
-        redirect_to initiate_order_path(transaction_params)
-      when matches([:preauthorize, :braintree])
-        redirect_to preauthorize_payment_path(transaction_params)
-      when matches([:postpay])
-        redirect_to post_pay_listing_path(transaction_params)
-      else
-        opts = "listing_id: #{listing_id}, payment_gateway: #{gateway}, payment_process: #{process}, booking: #{booking}"
-        raise ArgumentError.new("Can not find new transaction path to #{opts}")
+        when matches([:none])
+          render_free(listing_model: listing_model, author_model: author_model, community: @current_community, params: transaction_params)
+        when matches([:preauthorize, __, true])
+          redirect_to book_path(transaction_params)
+        when matches([:preauthorize, :paypal])
+          redirect_to initiate_order_path(transaction_params)
+        when matches([:preauthorize, :braintree])
+          redirect_to preauthorize_payment_path(transaction_params)
+        when matches([:postpay])
+          redirect_to post_pay_listing_path(transaction_params)
+        else
+          opts = "listing_id: #{listing_id}, payment_gateway: #{gateway}, payment_process: #{process}, booking: #{booking}"
+          raise ArgumentError.new("Can not find new transaction path to #{opts}")
       end
     }.on_error { |error_msg, data|
       flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")
       redirect_to (session[:return_to_content] || root)
     }
+
+  end
+
+  def adaptive_checkout
+
+    listing = Listing.find(session[:listing_id].to_f)
+
+
+    total_amount_in_cents = listing.price_cents
+
+    service_charge_rate = 5 #in percentage 5%
+
+    service_charge_in_cents = total_amount_in_cents * service_charge_rate / 100
+
+    service_charge_in_dollor = service_charge_in_cents / 100.00 # this will be for secondary user (Admin of the system)
+
+    total_amount_in_dollar = total_amount_in_cents / 100.00 # this will be for primary receiver
+
+    seller_email = PaypalAccount.where(person_id: listing.author_id).where(active: true).last.email # This is the Primary receiver
+
+    system_admin_email = PaypalAccount.where(active: true).where("paypal_accounts.community_id IS NOT NULL && paypal_accounts.person_id IS NULL").first.email # This is the Secondary receiver
+
+
+    recipients = [
+        {
+            email: seller_email,
+            amount: total_amount_in_dollar ,
+            primary: true
+        },
+
+        {
+            email: system_admin_email,
+            amount: service_charge_in_dollor,
+            primary: false
+        }
+    ]
+
+    response = ADAPTIVE_GATEWAY.setup_purchase(
+        action_type: "CREATE",
+        return_url: "http://esignature.lvh.me:3000/en/transactions/status",
+        cancel_url: "http://esignature.lvh.me:3000/",
+        ipn_notification_url: "https://f3d04dfe.ngrok.io/en/transactions/notification",
+        receiver_list: recipients
+    )
+
+
+    ADAPTIVE_GATEWAY.set_payment_options(
+
+        pay_key: response["payKey"],
+        receiver_options: [
+            {
+                description: "Your purchase of #{listing.title}",
+                invoice_data: {
+                    item: [
+                        {
+                            name: listing.title,
+                            item_count: 1,
+                            item_price: total_amount_in_dollar,
+                            price: total_amount_in_dollar
+                        }
+                    ]
+                },
+                receiver: {email: seller_email}
+            },
+            {
+                description: "Service charge for purchase of #{listing.title} ",
+                invoice_data: {
+                    item: [
+                        {
+                            name: "Service charge for purchase of #{listing.title}",
+                            item_count: 1,
+                            item_price: service_charge_in_dollor,
+                            price: service_charge_in_dollor
+                        }
+                    ]
+                },
+                receiver: {email: system_admin_email}
+            }
+        ]
+    )
+
+
+
+    # For redirecting the customer to the actual paypal site to finish the payment.
+    redirect_to (ADAPTIVE_GATEWAY.redirect_url_for(response["payKey"]))
+  end
+
+  def notification
+
+  end
+
+  def status
+
   end
 
   def create
@@ -92,7 +190,7 @@ class TransactionsController < ApplicationController
     ).on_success { |(_, (_, _, _, process), _, _, tx)|
       after_create_actions!(process: process, transaction: tx[:transaction], community_id: @current_community.id)
       flash[:notice] = after_create_flash(process: process) # add more params here when needed
-      redirect_to after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when needed
+      adaptive_checkout
     }.on_error { |error_msg, data|
       flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")
       redirect_to (session[:return_to_content] || root)
