@@ -2,17 +2,16 @@
 set :rvm_ruby_version, 'ruby-2.1.2'
 
 #Application name
-# set :application, 'kickmarket'
+set :application, 'kickmarket'
 
 # Source code management. Default value for :scm is :git
-set :scm, :none
-
+set :scm, :git
 
 #Server user
 set :user, "ec2-user"
 
 #Github repo url and branch if needed
-# set :repo_url, 'https://github.com/avenir/ave.git'
+set :repo_url, 'https://github.com/avenir/ave.git'
 
 # Default value for :format is :pretty
 set :format, :pretty
