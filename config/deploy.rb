@@ -11,7 +11,7 @@ set :scm, :git
 set :user, "ec2-user"
 
 #Github repo url and branch if needed
-set :repo_url, 'https://github.com/sharetribe/sharetribe.git'
+set :repo_url, 'https://github.com/avenir/ave.git'
 
 # Default value for :format is :pretty
 set :format, :pretty
