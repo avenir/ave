@@ -4,3 +4,5 @@ if Rails.env.production?
 else
   Rails.configuration.middleware.delete Rack::Timeout
 end
+
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE

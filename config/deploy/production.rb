@@ -61,7 +61,7 @@
 #   }
 
 set :deploy_to, "/home/ec2-user/deploy/app/kickmarket_eu"
-set :branch, :master
+set :branch, :adaptive_checkout
 set :stage, :production
 set :rails_env, :production
 server '52.30.222.183',
