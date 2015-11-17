@@ -117,7 +117,7 @@ class TransactionsController < ApplicationController
 
     service_charge_in_dollor = service_charge_in_cents / 100.00 # this will be for secondary user (Admin of the system)
 
-    total_amount_in_dollar = (total_amount_in_cents / 100.00) + (listing.shipping_price_cents)/100.00# this will be for primary receiver
+    total_amount_in_dollar = (total_amount_in_cents / 100.00) +  session[:listing_shipping_price]# this will be for primary receiver
 
     seller_email = PaypalAccount.where(person_id: listing.author_id).last.email # This is the Primary receiver
 
@@ -419,7 +419,6 @@ class TransactionsController < ApplicationController
     duration = booking ? DateUtils.duration_days(booking_start, booking_end) : nil
     quantity = Maybe(booking ? DateUtils.duration_days(booking_start, booking_end) : TransactionViewUtils.parse_quantity(params[:quantity])).or_else(1)
     total_label = t("transactions.price")
-
     m_price_break_down = Maybe(listing_model).select { |listing_model| listing_model.price.present? }.map { |listing_model|
       TransactionViewUtils.price_break_down_locals(
         {
@@ -433,7 +432,7 @@ class TransactionsController < ApplicationController
           quantity: quantity,
           subtotal: quantity != 1 ? listing_model.price * quantity : nil,
           total: listing_model.price * quantity,
-          shipping_price: nil,
+          shipping_price: Money.new(session[:listing_shipping_price] * 100, listing_model.price.currency),
           total_label: total_label
         })
     }

@@ -29,6 +29,15 @@ class ListingsController < ApplicationController
   before_filter :ensure_is_admin, :only => [ :move_to_top, :show_in_updates_email ]
 
   before_filter :is_authorized_to_post, :only => [ :new, :create ]
+  
+  def shipping_rate
+    @listing = Listing.find(session[:listing_id])
+    @listing_shipping_price = @listing.shippings.where(:country => params[:country]).first.shipping_rate
+    session[:listing_shipping_price] = @listing_shipping_price
+    respond_to do |format|
+      format.json { render json: {price:  @listing_shipping_price, status: :unprocessable_entity }}
+    end
+  end
 
   def index
     @selected_tribe_navi_tab = "home"
@@ -145,7 +154,7 @@ class ListingsController < ApplicationController
 
   def show
     @selected_tribe_navi_tab = "home"
-
+    session[:listing_id] = @listing.id
     @current_image = if params[:image]
       @listing.image_by_id(params[:image])
     else

@@ -216,6 +216,7 @@ Kassi::Application.routes.draw do
         get :browse
         get :locations_json
         get :verification_required
+        get :shipping_rate
       end
       resources :comments
       resources :listing_images do

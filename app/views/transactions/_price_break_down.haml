@@ -47,7 +47,10 @@
       %span.initiate-transaction-total-label
         - if total_label.present?
           = total_label
+          
         - else
           = t("transactions.total")
       %span.initiate-transaction-total-value
         = humanized_money_with_symbol(total)
+
+
