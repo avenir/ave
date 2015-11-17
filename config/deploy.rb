@@ -5,7 +5,8 @@ set :rvm_ruby_version, 'ruby-2.1.2'
 # set :application, 'kickmarket'
 
 # Source code management. Default value for :scm is :git
-set :scm, :git
+set :scm, :none
+
 
 #Server user
 set :user, "ec2-user"
