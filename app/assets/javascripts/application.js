@@ -73,4 +73,5 @@
 //= require transaction
 //= require listing_form
 //= require custom
+//= require transaction_status
 //= require_self

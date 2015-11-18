@@ -353,6 +353,7 @@ Kassi::Application.routes.draw do
             get :adaptive_checkout
             get :status
             post :notification
+            get :ipn_status
           end
         end
         resource :checkout_account, only: [:new, :show, :create]
