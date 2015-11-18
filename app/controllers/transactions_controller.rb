@@ -156,6 +156,9 @@ class TransactionsController < ApplicationController
       redirect_to homepage_with_locale_path
     end
   end
+  def notification
+
+  end
 
   def create
     Result.all(
