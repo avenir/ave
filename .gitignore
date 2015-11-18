@@ -43,3 +43,6 @@ coverage/
 .idea/
 *.sock
 .vagrant
+
+# Ignore application configuration
+/config/application.yml

@@ -213,6 +213,8 @@ GEM
     fb-channel-file (0.0.2)
       rails (>= 3.0)
     ffi (1.9.10)
+    figaro (1.1.1)
+      thor (~> 0.14)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
     flying-sphinx (1.2.0)
@@ -705,6 +707,7 @@ DEPENDENCIES
   email_spec
   factory_girl_rails
   fb-channel-file
+  figaro
   flying-sphinx (~> 1.2.0)
   guard-livereload
   guard-rspec
