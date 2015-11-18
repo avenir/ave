@@ -220,7 +220,6 @@ class ListingsController < ApplicationController
 
   def edit_form_content
     return redirect_to action: :edit unless request.xhr?
-
     if !@listing.origin_loc
         @listing.build_origin_loc(:location_type => "origin_loc")
     end
@@ -308,7 +307,9 @@ class ListingsController < ApplicationController
     if !@listing.origin_loc
         @listing.build_origin_loc(:location_type => "origin_loc")
     end
-
+    
+    @shipping = @listing.shippings
+   
     @custom_field_questions = @listing.category.custom_fields.find_all_by_community_id(@current_community.id)
     @numeric_field_ids = numeric_field_ids(@custom_field_questions)
 
