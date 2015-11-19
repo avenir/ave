@@ -4,7 +4,10 @@
       .col-12
         .delivery-title= t("listings.show.delivery")
         %ul
-          #shipping_price Shipping Price($)
+          = select( :country, :id, @listing.shippings.collect {|u| [u.country, u.country]}, {:prompt => 'Select Country'}, { :multiple => false }) 
+          %br
+          %br
+            #shipping_price Shipping Price($)
   - else
     .row
       .col-12

@@ -307,9 +307,11 @@ class ListingsController < ApplicationController
     if !@listing.origin_loc
         @listing.build_origin_loc(:location_type => "origin_loc")
     end
-    
-    @shipping = @listing.shippings
-   
+    if @listing.shippings.present?
+     @shipping = @listing.shippings
+   else
+     @shipping = @listing.shippings.build
+    end
     @custom_field_questions = @listing.category.custom_fields.find_all_by_community_id(@current_community.id)
     @numeric_field_ids = numeric_field_ids(@custom_field_questions)
 

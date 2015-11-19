@@ -1,28 +1,3 @@
-// // :javascript
-//   $(document).ready(function(){
-//     var oldId = 0;
-//     var newId = 0;
-
-//    $("#clone").click(function(){
-//       newId = newId + 1;
-//       var tempDOM = $("#clonning").clone();
-//       var fieldNamePrefix = "listing_shippings_attributes_";
-     
-//       tempDOM.find('#' + fieldNamePrefix + oldId + '_country').attr('name', 'listing[shippings_attributes][' + newId + '][country]');
-      
-//       tempDOM.find('#' + fieldNamePrefix + oldId + '_country').attr('id', fieldNamePrefix + newId + '_country');
-      
-//       tempDOM.find('#' + fieldNamePrefix + oldId + '_shipping_rate').attr('name', 'listing[shippings_attributes][' + newId + '][shipping_rate]');
-      
-//       tempDOM.find('#' + fieldNamePrefix + oldId + '_shipping_rate').attr('id', fieldNamePrefix + newId + '_shipping_rate');
-
-//       $('.delivery-row1').append(tempDOM);
-    
-//    });
-   
-//   });
-
-
 
 // :javascript
 
