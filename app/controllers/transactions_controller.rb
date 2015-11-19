@@ -94,8 +94,8 @@ class TransactionsController < ApplicationController
 
     response = ADAPTIVE_GATEWAY.setup_purchase(
         action_type: "CREATE",
-        return_url: "https://kickmarket.eu/en/transactions/status",
-        cancel_url: "https://kickmarket.eu/",
+        return_url: "http://esignature.lvh.me:3000/en/transactions/status",
+        cancel_url: "http://esignature.lvh.me:3000",
         ipn_notification_url: "https://kickmarket.eu/en/transactions/notification",
         receiver_list: recipients
     )
@@ -143,6 +143,9 @@ class TransactionsController < ApplicationController
 
   def ipn_status
     status = ADAPTIVE_GATEWAY.details_for_payment({pay_key: session[:payKey]}).response.status == "COMPLETED"? true : false
+    if status
+      Listing.find(session[:listing_id]).update_attributes(open: false)
+    end
     session[:payKey] = nil
     respond_to do |format|
       format.html
