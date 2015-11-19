@@ -243,7 +243,7 @@
         data : {country: country},
         success : function(s)
          {
-            $('#shipping_price').html('Shipping Price($+)' +s.price);
+            $('#shipping_price').html('Shipping Price($+' +s.price + ')');
          }
       });
   }

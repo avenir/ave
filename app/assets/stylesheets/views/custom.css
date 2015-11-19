@@ -36,3 +36,12 @@
         height: 96px;
         width: 1920px;
     }
+.divider {
+    margin-bottom: 10px;
+}
+.divider .shipping-options-label{
+    width: 70%;
+}
+#country_id{
+    margin-bottom: 10px;
+}
