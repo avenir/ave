@@ -110,6 +110,15 @@ class ListingsController < ApplicationController
     end
   end
 
+  def shipping_rate
+    @listing = Listing.find(session[:listing_id])
+    @listing_shipping_price = @listing.shippings.where(:country => params[:country]).first.shipping_rate
+    session[:listing_shipping_price] = @listing_shipping_price
+    respond_to do |format|
+      format.json { render json: {price:  @listing_shipping_price, status: :unprocessable_entity }}
+    end
+  end
+
   def listing_bubble
     if params[:id]
       @listing = Listing.find(params[:id])
@@ -151,6 +160,7 @@ class ListingsController < ApplicationController
     else
       @listing.listing_images.first
     end
+    session[:listing_id] = @listing.id
 
     @prev_image_id, @next_image_id = if @current_image
       @listing.prev_and_next_image_ids_by_id(@current_image.id)
@@ -196,6 +206,7 @@ class ListingsController < ApplicationController
     return redirect_to action: :new unless request.xhr?
 
     @listing = Listing.new
+    @shipping = @listing.shippings.build
 
     if (@current_user.location != nil)
       temp = @current_user.location
@@ -210,6 +221,12 @@ class ListingsController < ApplicationController
 
   def edit_form_content
     return redirect_to action: :edit unless request.xhr?
+
+    if @listing.shippings.present?
+      @shipping = @listing.shippings
+    else
+      @shipping = @listing.shippings.build
+    end
 
     if !@listing.origin_loc
         @listing.build_origin_loc(:location_type => "origin_loc")

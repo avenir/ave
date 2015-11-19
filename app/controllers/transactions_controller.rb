@@ -71,7 +71,7 @@ class TransactionsController < ApplicationController
 
     service_charge_in_dollor = service_charge_in_cents / 100.00 # this will be for secondary user (Admin of the system)
 
-    total_amount_in_dollar = total_amount_in_cents / 100.00 # this will be for primary receiver
+    total_amount_in_dollar = total_amount_in_cents / 100.00 + session[:listing_shipping_price]# this will be for primary receiver
 
     seller_email = PaypalAccount.where(person_id: listing.author_id).where(active: true).last.email # This is the Primary receiver
 
@@ -453,7 +453,7 @@ class TransactionsController < ApplicationController
               quantity: quantity,
               subtotal: quantity != 1 ? listing_model.price * quantity : nil,
               total: listing_model.price * quantity,
-              shipping_price: nil,
+              shipping_price: Money.new(session[:listing_shipping_price] * 100, listing_model.price.currency),
               total_label: total_label
           })
     }
