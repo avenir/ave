@@ -26,3 +26,12 @@
     display: table;
     line-height: 1.5em;
 }
+.divider {
+    margin-bottom: 10px;
+}
+.divider .shipping-options-label{
+    width: 65%;
+}
+#country_id{
+    margin-bottom: 10px;
+}

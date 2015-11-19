@@ -74,4 +74,5 @@
 //= require listing_form
 //= require custom
 //= require transaction_status
+//= require shipping_clone
 //= require_self

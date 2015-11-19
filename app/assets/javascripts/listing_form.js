@@ -150,10 +150,11 @@ window.ST = window.ST || {};
   // Ajax call to display listing form after categories and
   // listing shape has been selected
   function display_new_listing_form(selected_attributes, locale) {
-    var new_listing_path = '/' + locale + '/listings/new_form_content';
+      var new_listing_path = '/' + locale + '/listings/new_form_content';
     $.get(new_listing_path, selected_attributes, function(data) {
       $('.js-form-fields').html(data);
       $('.js-form-fields').removeClass('hidden');
+        bindJQueryEvent();
     });
   }
 
@@ -163,6 +164,7 @@ window.ST = window.ST || {};
     $.get(edit_listing_path, request_params, function(data) {
       $('.js-form-fields').html(data);
       $('.js-form-fields').removeClass('hidden');
+        bindJQueryEvent();
     });
   }
 
@@ -315,7 +317,6 @@ window.ST = window.ST || {};
 
   module.initialize_edit_listing_form_selectors = function(locale, attribute_array, listing_form_menu_titles, category, subcategory, listing_shape, id) {
     var ordered_attributes = ["category", "subcategory", "listing_shape"];
-
     // Selected values (string or null required)
     category = category ? "" + category : null;
     subcategory = subcategory ? "" + subcategory : null;
@@ -324,17 +325,15 @@ window.ST = window.ST || {};
     var selected_attributes = {"category": category, "subcategory": subcategory, "listing_shape": listing_shape};
     var originalSelection = _.clone(selected_attributes);
     var current_attributes = _.clone(selected_attributes);
-
     // Reset the view to initial state
     var shouldShowForm = update_listing_form_view(locale, attribute_array, listing_form_menu_titles, ordered_attributes, selected_attributes);
 
     if(shouldShowForm) {
       $('.js-form-fields').removeClass('hidden');
     }
-
+      bindJQueryEvent();
     var menuStateChanged = function(shouldLoadForm) {
       if(shouldLoadForm) {
-
         var loadNotNeeded = _.isEqual(selected_attributes, current_attributes);
         current_attributes = _.clone(selected_attributes);
 
@@ -351,7 +350,6 @@ window.ST = window.ST || {};
     // Listen for back button click
     window.addEventListener('popstate', function(evt) {
       selected_attributes = evt.state || originalSelection;
-
       $('.js-form-fields').addClass('hidden');
       var shouldLoadForm = select_listing_form_menu_link($(this), locale, attribute_array, listing_form_menu_titles, ordered_attributes, selected_attributes);
 

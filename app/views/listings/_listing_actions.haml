@@ -19,7 +19,6 @@
   - if is_author
     = render partial: "delivery_opts", locals: { delivery_opts: delivery_opts, is_author: is_author }
   - else
-
     = form_tag form_path, :method => :get, :id => "booking-dates" do
 
       - # Currently we show the selectors only for preauth process.
