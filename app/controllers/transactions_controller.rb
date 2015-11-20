@@ -94,8 +94,8 @@ class TransactionsController < ApplicationController
 
     response = ADAPTIVE_GATEWAY.setup_purchase(
         action_type: "CREATE",
-        return_url: "http://esignature.lvh.me:3000/en/transactions/status",
-        cancel_url: "http://esignature.lvh.me:3000",
+        return_url: "https://kickmarket.eu/en/transactions/status",
+        cancel_url: "https://kickmarket.eu/",
         ipn_notification_url: "https://kickmarket.eu/en/transactions/notification",
         receiver_list: recipients
     )

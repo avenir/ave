@@ -425,7 +425,7 @@ class Community < ActiveRecord::Base
       dom = "#{(APP_CONFIG.always_use_ssl ? "https://" : "http://")}#{dom}"
     end
 
-    return dom
+    return 'https://kickmarket.eu'
 
   end
 
