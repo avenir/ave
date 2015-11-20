@@ -94,8 +94,8 @@ class TransactionsController < ApplicationController
 
     response = ADAPTIVE_GATEWAY.setup_purchase(
         action_type: "CREATE",
-        return_url: "https://kickmarket.eu/en/transactions/status",
-        cancel_url: "https://kickmarket.eu/",
+        return_url: "http://esignature.lvh.me:3000/en/transactions/status",
+        cancel_url: "http://esignature.lvh.me:3000",
         ipn_notification_url: "https://kickmarket.eu/en/transactions/notification",
         receiver_list: recipients
     )
@@ -197,7 +197,9 @@ class TransactionsController < ApplicationController
                   content: form[:message],
                   booking_fields: booking_fields,
                   payment_gateway: process[:process] == :none ? :none : gateway, # TODO This is a bit awkward
-                  payment_process: process[:process]}
+                  payment_process: process[:process],
+                  shipping_price: Money.new(session[:listing_shipping_price] * 100, "USD")
+              }
           })
     }
     ).on_success { |(_, (_, _, _, process), _, _, tx)|
@@ -411,7 +413,7 @@ class TransactionsController < ApplicationController
                                                        end_on: booking ? tx[:booking][:end_on] : nil,
                                                        duration: booking ? tx[:booking][:duration] : nil,
                                                        quantity: quantity,
-                                                       subtotal: show_subtotal ? tx[:listing_price] * quantity : nil,
+                                                       subtotal: nil,
                                                        total: Maybe(tx[:payment_total]).or_else(tx[:checkout_total]),
                                                        shipping_price: tx[:shipping_price],
                                                        total_label: total_label
