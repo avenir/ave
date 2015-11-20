@@ -130,7 +130,6 @@
       .col-12
         #listing-message-links
           = render :partial => "listing_actions", locals: { form_path: form_path, payment_gateway: payment_gateway, delivery_opts: delivery_opts, process: process, listing_unit_type: listing_unit_type, country_code: country_code }
-          -# = select( :country, :id, @listing.shippings.collect {|u| [u.country, u.country]}, {:prompt => 'Select Country'}, { :multiple => false })
           
           
     .row-with-divider

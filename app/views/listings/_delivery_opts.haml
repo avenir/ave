@@ -6,10 +6,12 @@
         %ul
           = select( :country, :id, @listing.shippings.collect {|u| [u.country, u.country]}, {:prompt => 'Select Country'}, { :multiple => false }) 
           #shipping_price Shipping Price($)
+          
   - else
     .row
       .col-12
         .delivery-title= t("listings.show.delivery")
+        = select( :country, :id, @listing.shippings.collect {|u| [u.country, u.country]}, {:prompt => 'Select Country'}, { :multiple => false })
     - if delivery_opts.count == 1
       %ul
         #shipping_price Shipping Price($)
