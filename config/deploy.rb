@@ -1,4 +1,6 @@
 # config valid only for current version of Capistrano
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
 lock '3.4.0'
 
 set :application, 'kickmarket'
@@ -8,7 +10,6 @@ set :stages, ["staging", "production"]
 set :default_stage, "staging"
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
-
 # Default deploy_to directory is /var/www/my_app_name
  set :deploy_to, '/var/www/kickmarket'
 
@@ -47,5 +48,13 @@ namespace :deploy do
       # end
     end
   end
+end
 
+after "deploy:symlink", "deploy:update_crontab"
+
+namespace :deploy do
+  desc "Update the crontab file"
+  task :update_crontab, :roles => :db do
+    run "cd #{release_path} && whenever --update-crontab #{application}"
+  end
 end
