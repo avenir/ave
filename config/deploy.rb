@@ -1,6 +1,5 @@
 # config valid only for current version of Capistrano
-set :whenever_command, "bundle exec whenever"
-require "whenever/capistrano"
+
 lock '3.4.0'
 
 set :application, 'kickmarket'

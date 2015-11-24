@@ -19,12 +19,10 @@
 
 # Learn more: http://github.com/javan/whenever
 set :output, "#{path}/log/cron.log"
-every 10.minutes do
-  command "bundle exec rake RAILS_ENV=production ts:index"
-end
-every 1.minutes do
+every :reboot do
+	rake "ts:start"
 	rake "ts:index"
 end
-every :reboot do 
+every 1.minutes do
 	rake "ts:start"
 end
