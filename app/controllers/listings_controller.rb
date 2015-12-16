@@ -187,6 +187,8 @@ class ListingsController < ApplicationController
   end
 
   def new
+    return redirect_to new_paypal_account_settings_payment_path  current_person unless PaypalHelper.account_prepared_for_user?(@current_user.id, @current_community.id)
+
     category_tree = CategoryViewUtils.category_tree(
       categories: ListingService::API::Api.categories.get_all(community_id: @current_community.id)[:data],
       shapes: get_shapes,

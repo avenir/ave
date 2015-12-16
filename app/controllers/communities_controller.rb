@@ -34,7 +34,7 @@ class CommunitiesController < ApplicationController
         marketplace[:id])
 
       auth_token = UserService::API::AuthTokens.create_login_token(user[:id])
-      url = URLUtils.append_query_param("https://kickmarket.eu", "auth", auth_token[:token])
+      url = URLUtils.append_query_param(marketplace[:url], "auth", auth_token[:token])
       redirect_to url
     else
       render_form(errors: form.errors.full_messages)

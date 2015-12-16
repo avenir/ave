@@ -421,8 +421,6 @@ class Community < ActiveRecord::Base
       dom += ":#{port_string}" unless port_string.blank?
     end
 
-    dom = "kickmarket.eu"
-
     if options[:with_protocol]
       dom = "#{(APP_CONFIG.always_use_ssl ? "https://" : "http://")}#{dom}"
     end
