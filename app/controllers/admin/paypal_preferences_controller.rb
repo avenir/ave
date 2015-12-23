@@ -104,6 +104,9 @@ class Admin::PaypalPreferencesController < ApplicationController
         country: community_country_code
       }))
     permissions_url = response.data[:redirect_url]
+    puts "=*=*" * 100
+    puts response.inspect
+    puts "=*=*"	* 100
 
     if permissions_url.blank?
       flash[:error] = t("paypal_accounts.new.could_not_fetch_redirect_url")

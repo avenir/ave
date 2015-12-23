@@ -80,6 +80,7 @@ Kassi::Application.configure do
   # Generate digests for assets URLs
   config.assets.digest = true
 
+  config.assets.precompile += ["*.ttf", "*.woff", "*.svg", "*.eot"] 
   # settings for asset-sync gem
   config.action_controller.asset_host = "#{APP_CONFIG.FOG_DIRECTORY}.s3.amazonaws.com" if APP_CONFIG.FOG_DIRECTORY
   config.assets.prefix = "/assets"
@@ -95,7 +96,7 @@ Kassi::Application.configure do
   # config.i18n.fallbacks = true #fallbacks defined in intitializers/i18n.rb
 
   config.action_mailer.raise_delivery_errors = true
-
+  #config.assets.paths << Rails.root.join("app", "assets", "fonts")
   mail_delivery_method = (APP_CONFIG.mail_delivery_method.present? ? APP_CONFIG.mail_delivery_method.to_sym : :sendmail)
 
   config.action_mailer.delivery_method = mail_delivery_method
@@ -123,13 +124,13 @@ Kassi::Application.configure do
 
 
   config.after_initialize do
-    ActiveMerchant::Billing::Base.mode = :test
+    ActiveMerchant::Billing::Base.mode = :live
 
     paypal_options = {
-        login: "vikas-facilitator_api1.esignature.com.np",
-        password: "1395372424",
-        signature: "An5ns1Kso7MWUdW4ErQKJJJ4qi4-AeUWvcYwAah4uQWmMBoHdxQ52OhD",
-        appid: "APP-80W284485P519543T"
+        login: "info_api1.kickmarket.eu",
+        password: "45SKUAUMYBW7HQVR",
+        signature: "AOiA1-UpyyUoiXx0cJ5A2apZv0JNAyCH6tCaOPOAls5WbX0DgvVpzAfY",
+	appid: "APP-6W926112PU8290631"
     }
     ::ADAPTIVE_GATEWAY = ActiveMerchant::Billing::PaypalAdaptivePayment.new(paypal_options)
 

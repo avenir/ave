@@ -10,7 +10,6 @@ class PaypalAccountsController < ApplicationController
   DataTypePermissions = PaypalService::DataTypes::Permissions
 
   def show
-
     return redirect_to action: :new unless PaypalHelper.account_prepared_for_user?(@current_user.id, @current_community.id)
 
     m_account = accounts_api.get(
@@ -38,7 +37,7 @@ class PaypalAccountsController < ApplicationController
   end
 
   def new
-    return redirect_to action: :show if PaypalHelper.account_prepared_for_user?(@current_user.id, @current_community.id)
+   return redirect_to action: :show if PaypalHelper.account_prepared_for_user?(@current_user.id, @current_community.id)
 
     m_account = accounts_api.get(
       community_id: @current_community.id,
@@ -129,6 +128,9 @@ class PaypalAccountsController < ApplicationController
           }
         ))
 
+	puts "=======" * 100
+       puts response.inspect
+	puts "=======" * 100
       billing_agreement_url = response.data[:redirect_url]
 
       if billing_agreement_url.blank?
@@ -203,7 +205,6 @@ class PaypalAccountsController < ApplicationController
       billing_agreement_request_token: params[:token]
     )
 
-    binding.pry
     if response[:success]
       redirect_to show_paypal_account_settings_payment_path(@current_user.username)
     else

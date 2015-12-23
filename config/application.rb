@@ -34,7 +34,7 @@ module Kassi
 
     # Enable the asset pipeline
     config.assets.enabled = true
-
+    config.assets.paths << Rails.root.join("app", "assets", "font-awesome-icons")
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
@@ -130,7 +130,7 @@ module Kassi
 
     if (APP_CONFIG.s3_bucket_name && APP_CONFIG.aws_access_key_id && APP_CONFIG.aws_secret_access_key)
       paperclip_options.merge!({
-        :path => "images/:class/:attachment/:id/:style/:filename",
+        :path => "imagess/:class/:attachment/:id/:style/:filename",
         :url => ":s3_domain_url",
         :storage => :s3,
         :s3_protocol => 'https',

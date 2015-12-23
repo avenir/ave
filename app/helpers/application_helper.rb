@@ -935,6 +935,18 @@ module ApplicationHelper
     params[:sort].eql?(column) && params[:direction].eql?("asc") ? "desc" : "asc"
   end
 
+  def posting_menu
+    if @current_user.present?
+      if PaypalAccount.where(:person_id =>@current_user.id).where(:active=> true).present? 
+        new_listing_path
+      else
+         new_paypal_account_settings_payment_path(@current_user.id)
+       end
+    else
+      new_listing_path
+    end
+  end  
+ 
   # Give an array of translation keys you need in JavaScript. The keys will be loaded and ready to be used in JS
   # with `ST.t` function
   def js_t(keys, run_js_immediately=false)

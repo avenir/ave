@@ -64,8 +64,8 @@ class TransactionsController < ApplicationController
 
 
     total_amount_in_cents = listing.price_cents
-
-    service_charge_rate = 5 #in percentage 5%
+    community_id = PaypalAccount.where(active: true).where("paypal_accounts.community_id IS NOT NULL && paypal_accounts.person_id IS NULL").first.community_id
+    service_charge_rate = PaymentSettings.where(active: true).where(community_id: community_id).first.commission_from_seller #in percentage 5%
 
     service_charge_in_cents = total_amount_in_cents * service_charge_rate / 100
 
@@ -73,10 +73,14 @@ class TransactionsController < ApplicationController
 
     total_amount_in_dollar = total_amount_in_cents / 100.00 + session[:listing_shipping_price]# this will be for primary receiver
 
-    seller_email = PaypalAccount.where(person_id: listing.author_id).where(active: true).last.email # This is the Primary receiver
+   seller_email = PaypalAccount.where(person_id: listing.author_id).where(active: true).last.email # This is the Primary receiver
 
-    system_admin_email = PaypalAccount.where(active: true).where("paypal_accounts.community_id IS NOT NULL && paypal_accounts.person_id IS NULL").first.email # This is the Secondary receiver
-
+  system_admin_email = PaypalAccount.where(active: true).where("paypal_accounts.community_id IS NOT NULL && paypal_accounts.person_id IS NULL").first.email # This is the Secondary receiver
+   
+   puts "===========================" * 100
+	puts seller_email
+   puts "==================================================" * 100
+   puts system_admin_email
 
     recipients = [
         {
@@ -94,15 +98,19 @@ class TransactionsController < ApplicationController
 
     response = ADAPTIVE_GATEWAY.setup_purchase(
         action_type: "CREATE",
-        return_url: "http://esignature.lvh.me:3000/en/transactions/status",
-        cancel_url: "http://esignature.lvh.me:3000",
+        return_url: "https://kickmarket.eu/en/transactions/status",
+        cancel_url: "https://kickmarket.eu/en",
         ipn_notification_url: "https://kickmarket.eu/en/transactions/notification",
-        receiver_list: recipients
+        receiver_list: recipients,
+	currency_code: listing.price.currency.iso_code
     )
-    session[:payKey] = response["payKey"]
+    puts "============" * 100
+puts response.inspect
 
+puts "=========================="
+puts "Language==== #{listing.price.currency.iso_code}"
+puts "===============" * 100    
     ADAPTIVE_GATEWAY.set_payment_options(
-
         pay_key: response["payKey"],
         receiver_options: [
             {
@@ -113,7 +121,8 @@ class TransactionsController < ApplicationController
                             name: listing.title,
                             item_count: 1,
                             item_price: total_amount_in_dollar,
-                            price: total_amount_in_dollar
+                            price: total_amount_in_dollar,
+                            currency_code: listing.price.currency.iso_code
                         }
                     ]
                 },
@@ -127,7 +136,8 @@ class TransactionsController < ApplicationController
                             name: "Service charge for purchase of #{listing.title}",
                             item_count: 1,
                             item_price: service_charge_in_dollor,
-                            price: service_charge_in_dollor
+                            price: service_charge_in_dollor,
+			    currency_code: listing.price.currency.iso_code
                         }
                     ]
                 },
@@ -135,8 +145,9 @@ class TransactionsController < ApplicationController
             }
         ]
     )
-
-
+    session["payKey"] = response["payKey"]
+    puts ADAPTIVE_GATEWAY.inspect
+    puts "=========" * 25
     # For redirecting the customer to the actual paypal site to finish the payment.
     redirect_to (ADAPTIVE_GATEWAY.redirect_url_for(response["payKey"]))
   end
@@ -146,6 +157,14 @@ class TransactionsController < ApplicationController
     if status
       Listing.find(session[:listing_id]).update_attributes(open: false)
     end
+
+  puts "=========" * 25
+ puts "status = >>>>> #{status}"
+  puts "=========" * 25
+ puts ADAPTIVE_GATEWAY.details_for_payment({pay_key: session[:payKey]}).inspect
+  puts "=========" * 25
+puts session[:payKey]
+  puts "=========" * 25
     session[:payKey] = nil
     respond_to do |format|
       format.html
@@ -154,10 +173,10 @@ class TransactionsController < ApplicationController
   end
 
   def status
-    if(session[:payKey].nil?)
-      flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
-      redirect_to homepage_with_locale_path
-    end
+    #if(session[:payKey].nil?)
+    #  flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
+    #  redirect_to homepage_with_locale_path
+    # end
   end
   def notification
 
@@ -198,7 +217,7 @@ class TransactionsController < ApplicationController
                   booking_fields: booking_fields,
                   payment_gateway: process[:process] == :none ? :none : gateway, # TODO This is a bit awkward
                   payment_process: process[:process],
-                  shipping_price: Money.new(session[:listing_shipping_price] * 100, "USD")
+                  shipping_price: Money.new(session[:listing_shipping_price] * 100, "GBP")
               }
           })
     }

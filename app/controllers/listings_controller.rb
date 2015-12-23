@@ -115,7 +115,7 @@ class ListingsController < ApplicationController
     @listing_shipping_price = @listing.shippings.where(:country => params[:country]).first.shipping_rate
     session[:listing_shipping_price] = @listing_shipping_price
     respond_to do |format|
-      format.json { render json: {price:  @listing_shipping_price, status: :unprocessable_entity }}
+      format.json { render json: {price: "#{Money::Currency.new(Community.first.default_currency).symbol} + #{@listing_shipping_price.to_s}" , status: :unprocessable_entity }}
     end
   end
 
@@ -187,8 +187,8 @@ class ListingsController < ApplicationController
   end
 
   def new
-    return redirect_to new_paypal_account_settings_payment_path  current_person unless PaypalHelper.account_prepared_for_user?(@current_user.id, @current_community.id)
 
+   # return redirect_to new_paypal_account_settings_payment_path @current_user  unless PaypalHelper.account_prepared_for_user?(@current_user.id, @current_community.id)
     category_tree = CategoryViewUtils.category_tree(
       categories: ListingService::API::Api.categories.get_all(community_id: @current_community.id)[:data],
       shapes: get_shapes,

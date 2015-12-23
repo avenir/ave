@@ -1,19 +1,21 @@
-- if delivery_opts.present?
+- if !delivery_opts.present?
   - if is_author
     .row
       .col-12
         .delivery-title= t("listings.show.delivery")
         %ul
-          = select( :country, :id, @listing.shippings.collect {|u| [u.country, u.country]}, {:prompt => 'Select Country'}, { :multiple => false })
-          #shipping_price Shipping Price($)
+          = select( :country, :id, @listing.shippings.collect {|u| [u.country, u.country]}, {:prompt => 'Select Country'}, {:required => "true"})
+          #shipping_price Shipping Price(#{Money::Currency.new(Community.first.default_currency).symbol})
+
   - else
     .row
       .col-12
         .delivery-title= t("listings.show.delivery")
+        %ul
+          = select( :country, :id, @listing.shippings.collect {|u| [u.country, u.country]}, {:prompt => 'Select Country'},{:required => "true"})
+          #shipping_price Shipping Price(#{Money::Currency.new(Community.first.default_currency).symbol})
     - if delivery_opts.count == 1
-      %ul
-        = select( :country, :id, @listing.shippings.collect {|u| [u.country, u.country]}, {:prompt => 'Select Country'}, {:required => "true"})
-        #shipping_price Shipping Price($)
+     
     - else
       - delivery_opts.each do |opts|
         .row
@@ -26,3 +28,4 @@
                 - symbol = opts[:price].currency.symbol
                 - price_tag_with_currency = opts[:price].currency.symbol_first ? "(+#{symbol}#{price_tag})" : "(+#{price_tag} #{symbol})"
                 = price_tag_with_currency.html_safe
+

@@ -91,12 +91,12 @@ Kassi::Application.configure do
   config.middleware.insert_after(ActionDispatch::Static, Rack::LiveReload)
 
   config.after_initialize do
-    ActiveMerchant::Billing::Base.mode = :test
-    paypal_options = {
-        login: "vikas-facilitator_api1.esignature.com.np",
-        password: "1395372424",
-        signature: "An5ns1Kso7MWUdW4ErQKJJJ4qi4-AeUWvcYwAah4uQWmMBoHdxQ52OhD",
-        appid: "APP-80W284485P519543T"
+    ActiveMerchant::Billing::Base.mode = :production
+     paypal_options = {
+        login: "info_api1.kickmarket.eu",
+        password: "45SKUAUMYBW7HQVR",
+        signature: "AOiA1-UpyyUoiXx0cJ5A2apZv0JNAyCH6tCaOPOAls5WbX0DgvVpzAfY",
+        appid: "APP-6W926112PU8290631"
     }
     ::ADAPTIVE_GATEWAY = ActiveMerchant::Billing::PaypalAdaptivePayment.new(paypal_options)
 
