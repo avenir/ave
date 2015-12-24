@@ -1,8 +1,14 @@
-Hi #{seller_username},
+%tr
+  %td{:align => "left"}
+    %font{body_font}
+      ="#{buyer_username} tried to purchase your listing #{listing_title} #{Time.now}, but the transaction has failed. Please make sure your PayPal account is connected #{ link_to 'Here', payments_person_settings_url(current_person)} and that you have also enabled multi-currency transactions #{ link_to 'Here', payments_person_settings_url(current_person)}.Once you have updated your account, please message #{buyer_username} to let them know you have done so."
+%tr
+  %td
+    = render :partial => "person_mailer/action_button", :locals => { :text => "Send Message", :url => conversation_url}
+%tr
+  %td
+    = "Thank you for your patience."
+%tr
+  %td
+    = "KickMarket Crew."
 
-#{buyer_username} tried to purchase your listing #{Listing}{#time.now}, but the transaction has failed. Please make sure your PayPal account is connected (link_to ‘payment section of user profile’) and that you have also enabled multi-currency transactions (link_to ‘enable multi-currency instruction page’).
-Once you have updated your account, please message #{buyer_username} to let them know you have done so.
-If this problem persists,
-Please contact us at info@kickmarket.eu.
-</br>
-KickMarket Crew.

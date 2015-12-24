@@ -65,7 +65,7 @@ class TransactionMailer < ActionMailer::Base
                      :from => "info@bipashant.com",#community_specific_sender(community),
                      :subject => "New Payment") { |format|
         format.html {
-          render "paypal_transaction_created_buyer", locals: {
+          render "paypal_transaction_failed_buyer", locals: {
                                                conversation_url: person_transaction_url(seller, @url_params.merge({:id => transaction.id.to_s})),
                                                listing_title: transaction.listing_title,
                                                price_per_unit_title: t("emails.new_payment.price_per_unit_type", unit_type: unit_type),
@@ -77,6 +77,7 @@ class TransactionMailer < ActionMailer::Base
                                                shipping_total: humanized_money_with_symbol(transaction.shipping_price),
                                                seller_full_name: seller.name(community),
                                                seller_given_name: seller.given_name_or_username,
+                                               seller_username: seller.username,
                                                automatic_confirmation_days: transaction.automatic_confirmation_after_days,
                                                show_money_will_be_transferred_note: true
                                            }
@@ -102,7 +103,7 @@ class TransactionMailer < ActionMailer::Base
                      :from => "info@bipashant.com",#community_specific_sender(community),
                      :subject => "New Payment") { |format|
         format.html {
-          render "paypal_transaction_created_seller", locals: {
+          render "paypal_transaction_failed_seller", locals: {
                                                        conversation_url: person_transaction_url(seller, @url_params.merge({:id => transaction.id.to_s})),
                                                        listing_title: transaction.listing_title,
                                                        price_per_unit_title: t("emails.new_payment.price_per_unit_type", unit_type: unit_type),
@@ -114,6 +115,7 @@ class TransactionMailer < ActionMailer::Base
                                                        shipping_total: humanized_money_with_symbol(transaction.shipping_price),
                                                        buyer_full_name: buyer.name(community),
                                                        buyer_given_name: buyer.given_name_or_username,
+                                                       buyer_username: buyer.username,
                                                        automatic_confirmation_days: transaction.automatic_confirmation_after_days,
                                                        show_money_will_be_transferred_note: true
                                                    }

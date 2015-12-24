@@ -1,7 +1,14 @@
-Hi #{buyer_username},
+%tr
+  %td{:align => "left"}
+    %font{body_font}
+      = "Your purchase of #{listing_title} from #{seller_username} has failed. This may be due to the seller #{seller_username} not having updated their PayPal settings. We have sent an email to #{seller_username} advising them of this, and asked them to message you once the issue has been resolved."
+%tr
+  %td
+    = render :partial => "person_mailer/action_button", :locals => { :text => "Send message to #{seller_username}", :url => conversation_url}
+%tr
+  %td
+    = "Thank you for your patience."
+%tr
+  %td
+    = "KickMarket Crew."
 
-Your purchase #{Listing} from #{buyer_username} has failed. This may be due to the seller #{seller_username} not having updated their PayPal settings. We have sent an email to #{seller_username} advising them of this, and asked them to message you once the issue has been resolved. 
-
-Thank you for your patience.
-<br>
-KickMarket Crew.
