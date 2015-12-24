@@ -1,0 +1,50 @@
+%tr
+  %td{:align => "left"}
+    %font{body_font}
+      = "You've received payment of  #{payment_total} for #{listing_title} from #{buyer_full_name}. Here is a receipt of the payment."
+%tr
+  %td{:align => "left", :style => "padding: 10px 0;"}
+    %table{:cellpadding => 5, :cellspacing => 0}
+      %tbody
+        %tr
+          %td{:width => "200"}
+            %b= t("emails.receipt_to_payer.product")
+          %td
+            %b= listing_title
+        - if duration.present? || listing_quantity > 1
+          %tr
+            %td{:width => "250"}
+              = price_per_unit_title
+            %td
+              = listing_price
+        - if duration.present?
+          %tr
+            %td{:width => "250"}
+              = t("emails.receipt_to_payer.duration")
+            %td
+              = duration
+        - elsif listing_quantity > 1
+          %tr
+            %td{:width => "250"}
+              = quantity_selector_label || t("emails.receipt_to_payer.quantity")
+            %td
+              = listing_quantity
+        %tr
+          %td{:width => "250"}
+            = t("emails.receipt_to_payer.subtotal") #listing_title
+          %td
+            = subtotal
+
+        - if shipping_total.present?
+          %tr
+            %td
+              = t("emails.paypal_new_payment.shipping_total")
+            %td= shipping_total
+
+        %tr{:style => "border-top: 1px solid black"}
+          %td
+            %b=t("emails.receipt_to_payer.total")
+          %td
+            %b= payment_total
+
+= render :partial => "person_mailer/action_button", :locals => { :text => t("emails.conversation_status_changed.view_thread"), :url => conversation_url}

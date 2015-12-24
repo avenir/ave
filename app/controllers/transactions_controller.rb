@@ -98,9 +98,9 @@ class TransactionsController < ApplicationController
 
     response = ADAPTIVE_GATEWAY.setup_purchase(
         action_type: "CREATE",
-        return_url: "https://kickmarket.eu/en/transactions/status",
-        cancel_url: "https://kickmarket.eu/en",
-        ipn_notification_url: "https://kickmarket.eu/en/transactions/notification",
+        return_url: "http://esignature.lvh.me:3000/en/transactions/status",
+        cancel_url: "http://esignature.lvh.me:3000/en",
+        ipn_notification_url: "http://esignature.lvh.me:3000/en/transactions/notification",
         receiver_list: recipients,
 	currency_code: listing.price.currency.iso_code
     )
@@ -156,14 +156,16 @@ puts "===============" * 100
     status = ADAPTIVE_GATEWAY.details_for_payment({pay_key: session[:payKey]}).response.status == "COMPLETED"? true : false
     if status
       Listing.find(session[:listing_id]).update_attributes(open: false)
+      Delayed::Job.enqueue(PaypalTransactionCreatedBuyerJob.new(Transaction.last.id, @current_community.id))
+      Delayed::Job.enqueue(PaypalTransactionCreatedSellerJob.new(Transaction.last.id, @current_community.id))
     end
 
   puts "=========" * 25
- puts "status = >>>>> #{status}"
+  puts "status = >>>>> #{status}"
   puts "=========" * 25
- puts ADAPTIVE_GATEWAY.details_for_payment({pay_key: session[:payKey]}).inspect
+  puts ADAPTIVE_GATEWAY.details_for_payment({pay_key: session[:payKey]}).inspect
   puts "=========" * 25
-puts session[:payKey]
+  puts session[:payKey]
   puts "=========" * 25
     session[:payKey] = nil
     respond_to do |format|
@@ -178,6 +180,7 @@ puts session[:payKey]
     #  redirect_to homepage_with_locale_path
     # end
   end
+
   def notification
 
   end
@@ -201,7 +204,7 @@ puts session[:payKey]
 
       quantity = Maybe(booking_fields).map { |b| DateUtils.duration_days(b[:start_on], b[:end_on]) }.or_else(form[:quantity])
 
-      TransactionService::Transaction.create(
+      transaction = TransactionService::Transaction.create(
           {
               transaction: {
                   community_id: @current_community.id,
@@ -224,6 +227,7 @@ puts session[:payKey]
     ).on_success { |(_, (_, _, _, process), _, _, tx)|
       after_create_actions!(process: process, transaction: tx[:transaction], community_id: @current_community.id)
       flash[:notice] = after_create_flash(process: process) # add more params here when needed
+      session[:transaction_id] = Transaction.last
       adaptive_checkout
     }.on_error { |error_msg, data|
       flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")
@@ -490,4 +494,8 @@ puts session[:payKey]
                                  form_action: person_transactions_path(person_id: @current_user, listing_id: listing_model.id)
                              }
   end
+
+
+
+
 end

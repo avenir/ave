@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151119065821) do
+ActiveRecord::Schema.define(:version => 20151216094149) do
 
   create_table "auth_tokens", :force => true do |t|
     t.string   "token"
@@ -554,6 +554,15 @@ ActiveRecord::Schema.define(:version => 20151119065821) do
   add_index "listing_shapes", ["community_id", "deleted", "sort_priority"], :name => "multicol_index"
   add_index "listing_shapes", ["community_id"], :name => "index_listing_shapes_on_community_id"
   add_index "listing_shapes", ["name"], :name => "index_listing_shapes_on_name"
+
+  create_table "listing_translations", :force => true do |t|
+    t.integer  "listing_id"
+    t.string   "locale"
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "listing_units", :force => true do |t|
     t.string   "unit_type",         :limit => 32, :null => false
