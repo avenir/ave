@@ -47,7 +47,7 @@ class TransactionMailer < ActionMailer::Base
     end
   end
 
-  def paypal_transaction_created_buyer(transaction)
+  def paypal_transaction_failed_buyer(transaction)
 
 
     seller = transaction.seller
@@ -63,9 +63,74 @@ class TransactionMailer < ActionMailer::Base
 
       premailer_mail(:to => "esbibek.ror@gmail.com",#recipient.confirmed_notification_emails_to,
                      :from => "info@bipashant.com",#community_specific_sender(community),
-                     :subject => "New Payment") { |format|
+                     :subject => "Transaction failed") { |format|
         format.html {
           render "paypal_transaction_failed_buyer", locals: {
+                                               conversation_url: person_transaction_url(seller, @url_params.merge({:id => transaction.id.to_s})),
+                                               listing_title: transaction.listing_title,
+                                               price_per_unit_title: t("emails.new_payment.price_per_unit_type", unit_type: unit_type),
+                                               listing_price: humanized_money_with_symbol(transaction.unit_price),
+                                               listing_quantity: transaction.listing_quantity,
+                                               duration: duration,
+                                               payment_total: humanized_money_with_symbol(transaction.unit_price + transaction.shipping_price),
+                                               subtotal: humanized_money_with_symbol(transaction.unit_price),
+                                               shipping_total: humanized_money_with_symbol(transaction.shipping_price),
+                                               seller_full_name: seller.name(community),
+                                               seller_given_name: seller.given_name_or_username,
+                                               seller_username: seller.username,
+                                               automatic_confirmation_days: transaction.automatic_confirmation_after_days,
+                                               show_money_will_be_transferred_note: true
+                                           }
+        }
+      }
+    end
+  end
+
+  def paypal_transaction_failed_seller(transaction, error_message, payment_page_link)
+    seller = transaction.seller
+    buyer = transaction.buyer
+    recipient = seller
+    community = Community.first
+    prepare_template(community, recipient, "email_about_new_payments")
+    with_locale(recipient.locale, community.locales.map(&:to_sym), community.id) do
+
+      premailer_mail(:to => "esbibek.ror@gmail.com",#recipient.confirmed_notification_emails_to,
+                     :from => "info@bipashant.com",#community_specific_sender(community),
+                     :subject => "Transaction Failed") { |format|
+        format.html {
+          render "paypal_transaction_failed_seller", locals: {
+                                                       conversation_url: person_transaction_url(seller, @url_params.merge({:id => transaction.id.to_s})),
+                                                       listing_title: transaction.listing_title,
+                                                       buyer_full_name: buyer.name(community),
+                                                       buyer_given_name: buyer.given_name_or_username,
+                                                       buyer_username: buyer.username,
+                                                       error_message: error_message,
+                                                       payment_page_link: payment_page_link
+                                                   }
+        }
+      }
+    end
+  end
+
+ def paypal_transaction_created_buyer(transaction)
+
+
+    seller = transaction.seller
+    buyer = transaction.buyer
+    recipient = buyer
+    community = Community.first
+
+    prepare_template(community, recipient, "email_about_new_payments")
+    with_locale(recipient.locale, community.locales.map(&:to_sym), community.id) do
+
+      unit_type = nil #Maybe(payment.transaction).select { |t| t.unit_type.present? }.map { |t| ListingViewUtils.translate_unit(t.unit_type, t.unit_tr_key) }.or_else(nil)
+      duration = nil #payment.transaction.booking.present? ? payment.transaction.booking.duration : nil
+
+      premailer_mail(:to => recipient.confirmed_notification_emails_to,
+                     :from => community_specific_sender(community),
+                     :subject => "Payments receipt") { |format|
+        format.html {
+          render "paypal_transaction_created_buyer", locals: {
                                                conversation_url: person_transaction_url(seller, @url_params.merge({:id => transaction.id.to_s})),
                                                listing_title: transaction.listing_title,
                                                price_per_unit_title: t("emails.new_payment.price_per_unit_type", unit_type: unit_type),
@@ -99,11 +164,11 @@ class TransactionMailer < ActionMailer::Base
       unit_type = nil #Maybe(payment.transaction).select { |t| t.unit_type.present? }.map { |t| ListingViewUtils.translate_unit(t.unit_type, t.unit_tr_key) }.or_else(nil)
       duration = nil #payment.transaction.booking.present? ? payment.transaction.booking.duration : nil
 
-      premailer_mail(:to => "esbibek.ror@gmail.com",#recipient.confirmed_notification_emails_to,
-                     :from => "info@bipashant.com",#community_specific_sender(community),
+      premailer_mail(:to => recipient.confirmed_notification_emails_to,
+                     :from => community_specific_sender(community),
                      :subject => "New Payment") { |format|
         format.html {
-          render "paypal_transaction_failed_seller", locals: {
+          render "paypal_transaction_created_seller", locals: {
                                                        conversation_url: person_transaction_url(seller, @url_params.merge({:id => transaction.id.to_s})),
                                                        listing_title: transaction.listing_title,
                                                        price_per_unit_title: t("emails.new_payment.price_per_unit_type", unit_type: unit_type),

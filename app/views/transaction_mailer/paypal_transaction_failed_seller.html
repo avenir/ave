@@ -1,0 +1,29 @@
+<tr>
+  <td align="left">
+    <%= "#{buyer_username} tried to purchase your listing #{listing_title} #{Time.now}, but the transaction has failed. Please make sure your PayPal account is connected" %>
+      <%= link_to('Here', payment_page_link) %>
+      <%= "and that you have also enabled multi-currency transactions " %>
+      <%= link_to('Here', payment_page_link) %>
+      <%= "Once you have updated your account, please message #{buyer_username} to let them know you have done so." %>
+  </td>
+</tr>
+<tr>
+    <td>
+        <%= "Error Details: #{error_message}" %>
+    </td>
+</tr>
+<tr>
+  <td>
+    <%= render :partial => "person_mailer/action_button", :locals => { :text => "Send Message to #{buyer_username} ", :url => conversation_url} %>
+  </td>
+</tr>
+<tr>
+  <td>
+    <%= "Thank you for your patience." %>
+  </td>
+</tr>
+<tr>
+  <td>
+    <%= "KickMarket Crew." %>
+  </td>
+</tr>

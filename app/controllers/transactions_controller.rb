@@ -98,14 +98,17 @@ class TransactionsController < ApplicationController
 
     response = ADAPTIVE_GATEWAY.setup_purchase(
         action_type: "CREATE",
-        return_url: "http://esignature.lvh.me:3000/en/transactions/status",
-        cancel_url: "http://esignature.lvh.me:3000/en",
+        return_url: status_person_transactions_url,
+        cancel_url: status_person_transactions_url,
         ipn_notification_url: "http://esignature.lvh.me:3000/en/transactions/notification",
         receiver_list: recipients,
-	currency_code: listing.price.currency.iso_code
+	      currency_code: "USD"#listing.price.currency.iso_code
     )
     puts "============" * 100
-puts response.inspect
+    puts response.inspect
+    if(response.response["response_envelope"]["ack"] == "Failure")
+      return send_error_email_notifciation response.response["error"][0]["message"]
+    end
 
 puts "=========================="
 puts "Language==== #{listing.price.currency.iso_code}"
@@ -126,7 +129,7 @@ puts "===============" * 100
                         }
                     ]
                 },
-                receiver: {email: seller_email}
+                receiver: {email: system_admin_email}
             },
             {
                 description: "Service charge for purchase of #{listing.title} ",
@@ -137,7 +140,7 @@ puts "===============" * 100
                             item_count: 1,
                             item_price: service_charge_in_dollor,
                             price: service_charge_in_dollor,
-			    currency_code: listing.price.currency.iso_code
+			                      currency_code: listing.price.currency.iso_code
                         }
                     ]
                 },
@@ -148,6 +151,10 @@ puts "===============" * 100
     session["payKey"] = response["payKey"]
     puts ADAPTIVE_GATEWAY.inspect
     puts "=========" * 25
+    if(response.response["response_envelope"]["ack"] == "Failure")
+      return send_error_email_notifciation response.response["error"][0]["message"]
+    end
+
     # For redirecting the customer to the actual paypal site to finish the payment.
     redirect_to (ADAPTIVE_GATEWAY.redirect_url_for(response["payKey"]))
   end
@@ -172,6 +179,12 @@ puts "===============" * 100
       format.html
       format.json { render json: status }
     end
+  end
+
+  def send_error_email_notifciation message
+    Delayed::Job.enqueue(PaypalTransactionFailedSellerJob.new(Transaction.last.id, @current_community.id, message, new_paypal_account_settings_payment_url(@current_user)))
+    Delayed::Job.enqueue(PaypalTransactionFailedBuyerJob.new(Transaction.last.id, @current_community.id))
+    redirect_to status_person_transactions_path
   end
 
   def status
