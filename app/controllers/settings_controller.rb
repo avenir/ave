@@ -32,6 +32,9 @@ class SettingsController < ApplicationController
   def payments
     @selected_left_navi_link = "payments"
   end
+  def add_curency
+
+  end
 
   def unsubscribe
     @person_to_unsubscribe = find_person_to_unsubscribe(@current_user, params[:auth])

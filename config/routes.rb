@@ -364,6 +364,7 @@ Kassi::Application.routes.draw do
             get :notifications
             get :payments
             get :unsubscribe
+            get :add_currency
           end
         end
         resources :testimonials
