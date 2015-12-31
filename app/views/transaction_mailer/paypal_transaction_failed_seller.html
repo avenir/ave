@@ -3,7 +3,7 @@
     <%= "#{buyer_username} tried to purchase your listing #{listing_title} #{Time.now}, but the transaction has failed. Please make sure your PayPal account is connected" %>
       <%= link_to('Here', payment_page_link) %>
       <%= "and that you have also enabled multi-currency transactions " %>
-      <%= link_to('Here', payment_page_link) %>
+      <%= link_to('Here', add_currency_url) %>
       <%= "Once you have updated your account, please message #{buyer_username} to let them know you have done so." %>
   </td>
 </tr>

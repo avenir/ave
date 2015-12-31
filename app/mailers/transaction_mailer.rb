@@ -86,7 +86,7 @@ class TransactionMailer < ActionMailer::Base
     end
   end
 
-  def paypal_transaction_failed_seller(transaction, error_message, payment_page_link)
+  def paypal_transaction_failed_seller(transaction, error_message, payment_page_link, add_currency_url)
     seller = transaction.seller
     buyer = transaction.buyer
     recipient = seller
@@ -105,7 +105,8 @@ class TransactionMailer < ActionMailer::Base
                                                        buyer_given_name: buyer.given_name_or_username,
                                                        buyer_username: buyer.username,
                                                        error_message: error_message,
-                                                       payment_page_link: payment_page_link
+                                                       payment_page_link: payment_page_link,
+                                                       add_currency_url: add_currency_url
                                                    }
         }
       }

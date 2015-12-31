@@ -1,4 +1,4 @@
-class PaypalTransactionFailedSellerJob < Struct.new(:transaction_id, :community_id, :error_message, :payment_setting_url)
+class PaypalTransactionFailedSellerJob < Struct.new(:transaction_id, :community_id, :error_message, :payment_setting_url, :add_currency_url)
 
   include DelayedAirbrakeNotification
 
@@ -12,7 +12,7 @@ class PaypalTransactionFailedSellerJob < Struct.new(:transaction_id, :community_
 
   def perform
     transaction = Transaction.find(transaction_id)
-    TransactionMailer.paypal_transaction_failed_seller(transaction, error_message, payment_setting_url).deliver
+    TransactionMailer.paypal_transaction_failed_seller(transaction, error_message, payment_setting_url, add_currency_url).deliver
   end
 
 end

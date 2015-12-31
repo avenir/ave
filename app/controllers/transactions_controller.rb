@@ -102,7 +102,7 @@ class TransactionsController < ApplicationController
         cancel_url: status_person_transactions_url,
         ipn_notification_url: "http://esignature.lvh.me:3000/en/transactions/notification",
         receiver_list: recipients,
-	      currency_code: "USD"#listing.price.currency.iso_code
+	      currency_code: "NPR"#listing.price.currency.iso_code
     )
     puts "============" * 100
     puts response.inspect
@@ -182,7 +182,7 @@ puts "===============" * 100
   end
 
   def send_error_email_notifciation message
-    Delayed::Job.enqueue(PaypalTransactionFailedSellerJob.new(Transaction.last.id, @current_community.id, message, new_paypal_account_settings_payment_url(@current_user)))
+    Delayed::Job.enqueue(PaypalTransactionFailedSellerJob.new(Transaction.last.id, @current_community.id, message, new_paypal_account_settings_payment_url(@current_user), add_currency_person_settings_url(@current_person)))
     Delayed::Job.enqueue(PaypalTransactionFailedBuyerJob.new(Transaction.last.id, @current_community.id))
     redirect_to status_person_transactions_path
   end
