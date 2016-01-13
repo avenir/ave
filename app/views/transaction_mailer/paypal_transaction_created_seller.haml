@@ -40,6 +40,11 @@
             %td
               = t("emails.paypal_new_payment.shipping_total")
             %td= shipping_total
+        - if service_charge_fee.present?
+          %tr
+            %td
+              = "Comission"
+            %td= "- #{service_charge_fee.to_s}"
 
         %tr{:style => "border-top: 1px solid black"}
           %td

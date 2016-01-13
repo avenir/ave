@@ -152,13 +152,12 @@ class TransactionMailer < ActionMailer::Base
     end
   end
 
-  def paypal_transaction_created_seller(transaction)
+  def paypal_transaction_created_seller(transaction, service_charge)
 
     seller = transaction.seller
     buyer = transaction.buyer
     recipient = seller
     community = Community.first
-
     prepare_template(community, recipient, "email_about_new_payments")
     with_locale(recipient.locale, community.locales.map(&:to_sym), community.id) do
 
@@ -176,12 +175,13 @@ class TransactionMailer < ActionMailer::Base
                                                        listing_price: humanized_money_with_symbol(transaction.unit_price),
                                                        listing_quantity: transaction.listing_quantity,
                                                        duration: duration,
-                                                       payment_total: humanized_money_with_symbol(transaction.unit_price + transaction.shipping_price),
+                                                       payment_total: humanized_money_with_symbol(transaction.unit_price + transaction.shipping_price - Money.new(service_charge * 100, "GBP")),
                                                        subtotal: humanized_money_with_symbol(transaction.unit_price),
                                                        shipping_total: humanized_money_with_symbol(transaction.shipping_price),
                                                        buyer_full_name: buyer.name(community),
                                                        buyer_given_name: buyer.given_name_or_username,
                                                        buyer_username: buyer.username,
+                                                       service_charge_fee: Money.new(service_charge * 100, "GBP").format,
                                                        automatic_confirmation_days: transaction.automatic_confirmation_after_days,
                                                        show_money_will_be_transferred_note: true
                                                    }

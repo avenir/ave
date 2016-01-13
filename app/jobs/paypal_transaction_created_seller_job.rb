@@ -1,4 +1,4 @@
-class PaypalTransactionCreatedSellerJob < Struct.new(:transaction_id, :community_id)
+class PaypalTransactionCreatedSellerJob < Struct.new(:transaction_id, :community_id, :service_charge)
 
   include DelayedAirbrakeNotification
 
@@ -12,7 +12,7 @@ class PaypalTransactionCreatedSellerJob < Struct.new(:transaction_id, :community
 
   def perform
     transaction = Transaction.find(transaction_id)
-    TransactionMailer.paypal_transaction_created_seller(transaction).deliver
+    TransactionMailer.paypal_transaction_created_seller(transaction, service_charge).deliver
   end
 
 end

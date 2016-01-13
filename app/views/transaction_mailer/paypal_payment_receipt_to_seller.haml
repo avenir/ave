@@ -1,7 +1,9 @@
 %tr
   %td{:align => "left"}
     %font{body_font}
-      = t("emails.new_payment.you_have_received_new_payment", :listing_title => listing_title, :payment_sum => payment_total, :payer_full_name => payer_full_name, :payer_given_name => payer_given_name).html_safe
+      = "This is your confirmation of purchase #{Time.now.getutc}."
+      = "#{payer_full_name} has purchased #{listing_title} for #{payment_total}"
+      = "Here is a receipt of the payment."
 
 %tr
   %td{:align => "left", :style => "padding: 20px 0;"}

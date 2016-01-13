@@ -76,9 +76,11 @@ class TransactionsController < ApplicationController
    seller_email = PaypalAccount.where(person_id: listing.author_id).where(active: true).last.email # This is the Primary receiver
 
   system_admin_email = PaypalAccount.where(active: true).where("paypal_accounts.community_id IS NOT NULL && paypal_accounts.person_id IS NULL").first.email # This is the Secondary receiver
+
+    session[:service_charge] = service_charge_in_dollor
    
    puts "===========================" * 100
-	puts seller_email
+	 puts seller_email
    puts "==================================================" * 100
    puts system_admin_email
 
@@ -102,7 +104,7 @@ class TransactionsController < ApplicationController
         cancel_url: status_person_transactions_url,
         ipn_notification_url: "http://esignature.lvh.me:3000/en/transactions/notification",
         receiver_list: recipients,
-	      currency_code: "NPR"#listing.price.currency.iso_code
+	      currency_code: listing.price.currency.iso_code
     )
     puts "============" * 100
     puts response.inspect
@@ -152,7 +154,7 @@ puts "===============" * 100
     puts ADAPTIVE_GATEWAY.inspect
     puts "=========" * 25
     if(response.response["response_envelope"]["ack"] == "Failure")
-      return send_error_email_notifciation response.response["error"][0]["message"]
+      return send_error_email_notifciation response.response["error"][0]["message"], listing
     end
 
     # For redirecting the customer to the actual paypal site to finish the payment.
@@ -164,9 +166,8 @@ puts "===============" * 100
     if status
       Listing.find(session[:listing_id]).update_attributes(open: false)
       Delayed::Job.enqueue(PaypalTransactionCreatedBuyerJob.new(Transaction.last.id, @current_community.id))
-      Delayed::Job.enqueue(PaypalTransactionCreatedSellerJob.new(Transaction.last.id, @current_community.id))
+      Delayed::Job.enqueue(PaypalTransactionCreatedSellerJob.new(Transaction.last.id, @current_community.id, session[:service_charge]))
     end
-
   puts "=========" * 25
   puts "status = >>>>> #{status}"
   puts "=========" * 25
@@ -177,11 +178,11 @@ puts "===============" * 100
     session[:payKey] = nil
     respond_to do |format|
       format.html
-      format.json { render json: status }
+      format.json { render json: {status: status, review_page: session[:review_page] }}
     end
   end
 
-  def send_error_email_notifciation message
+  def send_error_email_notifciation message, listing
     Delayed::Job.enqueue(PaypalTransactionFailedSellerJob.new(Transaction.last.id, @current_community.id, message, new_paypal_account_settings_payment_url(@current_user), add_currency_person_settings_url(@current_person)))
     Delayed::Job.enqueue(PaypalTransactionFailedBuyerJob.new(Transaction.last.id, @current_community.id))
     redirect_to status_person_transactions_path
@@ -241,6 +242,7 @@ puts "===============" * 100
       after_create_actions!(process: process, transaction: tx[:transaction], community_id: @current_community.id)
       flash[:notice] = after_create_flash(process: process) # add more params here when needed
       session[:transaction_id] = Transaction.last
+      session[:review_page] = after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when need
       adaptive_checkout
     }.on_error { |error_msg, data|
       flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")

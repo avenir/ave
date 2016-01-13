@@ -24,6 +24,5 @@
         - title = t("paypal_accounts.new.paypal_account_email")
         = render :partial => "ask_paypal_permissions", locals: {form: form, title: title, currency: currency, create_url: create_url, upgrade_url: upgrade_url}
 
-        %br/
-        .row
-          = form.label :paypal_email, t("paypal_accounts.new.paypal_account_billing_agreement", commission: commission_from_seller), :class => "input disabled"
+    %br/
+  = render :partial => 'add_currency_link.html'
