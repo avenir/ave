@@ -1,1 +1,7 @@
-<%= link_to('To add multiple currency', add_currency_person_settings_url(@current_person) ) %>
+<div class="col-12 isa_error" style="display: block">
+  <div class="row"><p style="font-weight: 700">When your paypal is connected:</p>
+    To sell on Kickmarket - Please update your PayPal settings to accept multiple currencies, follow the link below for instructions:
+   </div>
+  <div class="row"><u><%= link_to('Instructions for adding multiple currency', add_currency_person_settings_url(@current_person) ) %></u></div>
+</div>
+
