@@ -56,4 +56,7 @@
     %strong Grand total
     %span.initiate-transaction-total-value
       %strong
-        = humanized_money_with_symbol(total+shipping_price)
+        - if shipping_price.present?
+          = humanized_money_with_symbol(total+shipping_price)
+        - else
+          = humanized_money_with_symbol(total)
